@@ -20,11 +20,10 @@ con.connect((err) => {
     if (result.length === 0) {
       con.query(
         "CREATE TABLE todos (id int AUTO_INCREMENT PRIMARY KEY, todo TEXT)",
-        (err,
-        (result) => {
+        (err, result) => {
           if (err) console.log(err);
           else console.log("Database created: " + result);
-        })
+        }
       );
     } else {
       console.log("Connected to database and is accessible");
