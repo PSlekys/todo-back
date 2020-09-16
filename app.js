@@ -9,9 +9,41 @@ const app = express();
 app.use(bp.json());
 app.use(cors());
 
-// Demo GET
+// MySQL connection - creates database if empty
 
-app.get("/", (req, res) => res.send("ok"));
+const con = mysql.createConnection(process.env.DB);
+
+con.connect((err) => {
+  if (err) throw err;
+  con.query("SHOW TABLES LIKE 'todos'", (err, result) => {
+    if (err) console.log(err);
+    if (result.length === 0) {
+      con.query(
+        "CREATE TABLE todos (id int AUTO_INCREMENT PRIMARY KEY, todo TEXT)",
+        (err,
+        (result) => {
+          if (err) console.log(err);
+          else console.log("Database created: " + result);
+        })
+      );
+    } else {
+      console.log("Connected to database and is accessible");
+    }
+  });
+});
+
+// GET request to retrieve all todos
+
+app.get("/", (req, res) => {
+  con.query("SELECT * FROM todos", (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).send("Issue getting data");
+    } else {
+      res.json(result);
+    }
+  });
+});
 
 // Getting port from env file or resorting to default
 
