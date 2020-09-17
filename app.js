@@ -64,6 +64,22 @@ app.post("/", (req, res) => {
   }
 });
 
+// Delete request from database
+
+app.delete("/delete/:todo", (req, res) => {
+  con.query(
+    `DELETE FROM todos WHERE todo = '${req.params.todo}'`,
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(400).send("Failed to delete task");
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
 // Getting port from env file or resorting to default
 
 const port = process.env.PORT || 3000;
