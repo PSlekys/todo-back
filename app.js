@@ -44,6 +44,26 @@ app.get("/", (req, res) => {
   });
 });
 
+// POST request to add todo to database
+
+app.post("/", (req, res) => {
+  if (req.body.todo) {
+    con.query(
+      `INSERT INTO todos (todo) VALUES ('${req.body.todo}')`,
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          res.status(400).send("Error inserting a task");
+        } else {
+          res.json(result);
+        }
+      }
+    );
+  } else {
+    res.status(400).send("No todo has been passed");
+  }
+});
+
 // Getting port from env file or resorting to default
 
 const port = process.env.PORT || 3000;
